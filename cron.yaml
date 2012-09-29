@@ -1,0 +1,5 @@
+cron:
+#these are just placeholder values
+- description: search for relevant hash tags to respond to
+  url: /tasks/searchhashes
+  schedule: every 20 minutes
