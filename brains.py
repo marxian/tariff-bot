@@ -8,10 +8,9 @@ from google.appengine.ext import db
 
 
 def getIndicatorValue(country, indicator):
-	val = ':-( unknown'
+	val = False
 	response = urllib2.urlopen(config.configobject['wb_indicator_url'].format(country=country, indicator=indicator))
 	data = json.loads(response.read())
-	cand = False
 	for year in data[1]:
 		cand = year['value']
 		if cand:
@@ -22,20 +21,27 @@ def getIndicatorValue(country, indicator):
 			break;
 	return val
 
+def codeForCountry(country):
+	for co in countryinfo.countries:
+		if co['name'] == country:
+			return co['code']
+
+def makeVisLink(tweet):
+	cos = ";".join([codeForCountry(x) for x in tweet.countries])
+	url = config.configobject['vis_url'].format(country=cos, indicator=tweet.spec['relevant_data'][1])
+	return url
 
 def compose(tweet):
 	template = random.choice(tweet.spec['response_templates'])
-	c_code = False
-	for country in countryinfo.countries:
-		if country['name'] == tweet.countries[0]:
-			c_code = country['code']
-	if c_code:
-		value = getIndicatorValue(c_code, tweet.spec['relevant_data'][1])
+	value = getIndicatorValue(codeForCountry(tweet.countries[0]), tweet.spec['relevant_data'][1])
+	if value:
 		out = template.format(country=tweet.countries[0], value=value)
 		if tweet.tags:
 			out += ' ' + ' '.join(tweet.tags)
-
+		out += ' ' + makeVisLink(tweet)
 		return out
+	else:
+		return False #We can't make a tweet :-(
 
 
 def parse(spec, tweets):
@@ -93,10 +99,11 @@ if __name__ == '__main__':
 
 	tweets = [
 		Tweet("embargo import tests tests testing #test @user united kingdom"),
+		Tweet("could be @dpinsen bashing seems tendentious. an assertive trade policy can encourage investment no? e.g., reagan's japan tariff threats?"),
 		Tweet("this shouldn't get through the #test"),
 		Tweet("united arab emirates trade tariffs"),
 		]
-	for tweet in select(testspec, parse(testspec, tweets)):
+	for tweet in select(parse(testspec, tweets)):
 		print "text: ", tweet.text
 		print "words: ", tweet.words
 		print "stemmedwords: ", tweet.stemmedwords
