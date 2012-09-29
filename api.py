@@ -5,6 +5,7 @@ import os
 
 from secrets import *
 from config import *
+import brains
 
 def t_con():
 	auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
@@ -30,13 +31,22 @@ class Search(webapp.RequestHandler):
 				self.response.out.write('\t' + result.text + '\n')
 			
 
-
-
+class TestOut(webapp.RequestHandler):
+	def get(self):
+		country = self.request.GET.get('country')
+		tweet = {
+			"to": [],
+			"countries": [country],
+			"hashtags": ['#tariffbot']
+		}
+		self.response.headers['Content-Type'] = 'text/plain'
+		self.response.out.write(brains.compose(configobject['lexicon'][0], tweet))
 
 application = webapp.WSGIApplication(
 	[
 		('/tweet', Tweet),
 		('/tasks/search', Search),
+		('/testout', TestOut),
 	],
 	debug=True)
 
