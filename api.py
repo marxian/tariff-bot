@@ -28,11 +28,13 @@ class Search(webapp.RequestHandler):
 		for spec in configobject['lexicon']:
 			self.response.out.write('Twitter search for ' + spec['twitter_search_term'] + '\n')
 			results = api.search(spec['twitter_search_term'])
-			for result in results:
-				self.response.out.write('\t' + result.text + '\n')
-				filtertweet(result, spec)
+			results = brains.parse(spec, results)
+			results = brains.select(results)
+			
 			import pdb
 			pdb.set_trace()
+			for tweet in results:
+				print brains.compose(tweet)
 			
 
 class TestOut(webapp.RequestHandler):

@@ -5,9 +5,6 @@ import json
 import math
 import countryinfo
 
-def filtertweets(tweets, config = config.configobject):
-	pass
-
 
 def getIndicatorValue(country, indicator):
 	val = ':-( unknown'
@@ -25,10 +22,10 @@ def getIndicatorValue(country, indicator):
 	return val
 
 
-def compose(spec, tweet):
-	template = random.choice(spec['response_templates'])
+def compose(tweet):
+	template = random.choice(tweet.spec['response_templates'])
 	c_code = [x['code'] for x in countryinfo.countries if x['name'] == tweet['countries'][0]][0]
-	value = getIndicatorValue(c_code, spec['relevant_data'][1])
+	value = getIndicatorValue(c_code, tweet.spec['relevant_data'][1])
 	out = template.format(country=tweet['countries'][0], value=value)
 	if tweet['hashtags']:
 		out += ' ' + ' '.join(tweet['hashtags'])
@@ -44,17 +41,20 @@ def parse(spec, tweets):
 		tweet.tags = set(word for word in tweet.words if word.startswith('#'))
 		tweet.users = set(word for word in tweet.words if word.startswith('@'))
 		tweet.countries = [country[0] for country in config.configobject["countries"] if country[1].issubset(tweet.words)]	
+		tweet.spec = spec
 
 	return tweets
 
-def select(spec, tweets):
+def select(tweets):
+	outtweets = []
 	for tweet in tweets:
 		interesting = True
-		for synonyms in spec["search_criteria"]:
-			if not tweet.stemmedwords.intersection(synonyms): 
-				interesting = False #these aren't the tweets where looking for
-
-		if interesting: yield tweet
+		for synonyms in tweet.spec["search_criteria"]:
+			if tweet.stemmedwords.intersection(synonyms): 
+				outtweets.append(tweet)
+			else:
+				print "rejected: ", tweet
+	return outtweets
 
 
 	
