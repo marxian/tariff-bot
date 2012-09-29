@@ -17,14 +17,18 @@ configobject = {
 	],
 
 	"countries" : [ #canonical name
-		"great britain",
+		"Great Britain",
+		"United Arab Emirates"
 	
 	]
 	
 
 }
+
+#countries gets transformed to the format (string, set) here
 countries = configobject["countries"]
 for i in range(len(countries)):
-	countries[i] = set(countries[i].split(' '))
+	countries[i] = (countries[i], set(countries[i].lower().split(' ')))
 
-print configobject
+if __name__ == '__main__':
+	print configobject

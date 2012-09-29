@@ -7,18 +7,20 @@ def parse(spec, tweets):
 		tweet.stemmedwords = tweet.words.union(set(word[:-1] for word in tweet.words if word.endswith('s'))) #a horrible hack instead of stemming
 		tweet.tags = set(word for word in tweet.words if word.startswith('#'))
 		tweet.users = set(word for word in tweet.words if word.startswith('@'))
-		tweet.countries = [country for country in configobject["countries"] if country.issubset(tweet.words)]	
+		tweet.countries = [country[0] for country in configobject["countries"] if country[1].issubset(tweet.words)]	
+
+	return tweets
+
+def filter(spec, tweets):
+	interesting = True
+	for synonyms in spec["search_criteria"]:
+		if not tweet.stemmedwords.intersection(synonyms): 
+			interesting = False #these aren't the tweets where looking for
+
+	if interesting: yield tweet
 
 
-		interesting = True
-		for synonyms in spec["search_criteria"]:
-			if not tweet.stemmedwords.intersection(synonyms): 
-				interesting = False #these aren't the tweets where looking for
-
-		if interesting: yield tweet
-
-def respond(spec, tweet):
-	pass
+	
 
 if __name__ == '__main__':
 	testspec = 	{
@@ -32,7 +34,11 @@ if __name__ == '__main__':
 		def __init__(self, text):
 			self.text = text
 
-	tweets = [Tweet("embargo import tests tests testing #test @user great britain"),Tweet("this shouldn't get through the #test")]
+	tweets = [
+		Tweet("embargo import tests tests testing #test @user great britain"),
+		Tweet("this shouldn't get through the #test"),
+		Tweet("united arab emirates trade tariffs"),
+		]
 	for tweet in parse(testspec, tweets):
 		print "text: ", tweet.text
 		print "words: ", tweet.words
@@ -40,6 +46,7 @@ if __name__ == '__main__':
 		print "tags: ", tweet.tags
 		print "users: ", tweet.users
 		print "countries: ", tweet.countries
+		print
 
 
 
