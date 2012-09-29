@@ -1,5 +1,5 @@
 cron:
 #these are just placeholder values
-- description: search for relevant hash tags to respond to
-  url: /tasks/searchhashes
+- description: search for relevant tweets to respond to
+  url: /tasks/search
   schedule: every 20 minutes
