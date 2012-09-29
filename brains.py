@@ -2,10 +2,18 @@ import config
 import random
 import urllib2
 import json
+import os
 import math
 import countryinfo
 from google.appengine.ext import db
 import dbstructs
+import tweepy
+from secrets import *
+
+def t_con():
+	auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+	auth.set_access_token(access_token, access_token_secret)
+	return tweepy.API(auth)
 
 
 def getIndicatorValue(country, indicator):
@@ -40,9 +48,17 @@ def compose(tweet):
 		if tweet.tags:
 			out += ' ' + ' '.join(tweet.tags)
 		out += ' ' + makeVisLink(tweet)
-		return out
+		return tweet.respond and '@' + tweet.from_user + ' ' + out or out
 	else:
 		return False #We can't make a tweet :-(
+
+def send(text):
+	if text:
+		if not os.environ['SERVER_SOFTWARE'].startswith('Development'):
+			t_con().update_status(text)
+		return "{text}".format(text=text)
+	else:
+		return "nothing... :-("
 
 
 def parse(spec, tweets):
