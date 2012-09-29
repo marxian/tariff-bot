@@ -24,13 +24,17 @@ def getIndicatorValue(country, indicator):
 
 def compose(tweet):
 	template = random.choice(tweet.spec['response_templates'])
-	c_code = [x['code'] for x in countryinfo.countries if x['name'] == tweet['countries'][0]][0]
-	value = getIndicatorValue(c_code, tweet.spec['relevant_data'][1])
-	out = template.format(country=tweet['countries'][0], value=value)
-	if tweet['hashtags']:
-		out += ' ' + ' '.join(tweet['hashtags'])
+	c_code = False
+	for country in countryinfo.countries:
+		if country['name'] == tweet.countries[0]:
+			c_code = country['code']
+	if c_code:
+		value = getIndicatorValue(c_code, tweet.spec['relevant_data'][1])
+		out = template.format(country=tweet.countries[0], value=value)
+		if tweet.tags:
+			out += ' ' + ' '.join(tweet.tags)
 
-	return out
+		return out
 
 
 def parse(spec, tweets):
@@ -48,12 +52,19 @@ def parse(spec, tweets):
 def select(tweets):
 	outtweets = []
 	for tweet in tweets:
-		interesting = True
+		interesting = False
 		for synonyms in tweet.spec["search_criteria"]:
 			if tweet.stemmedwords.intersection(synonyms): 
-				outtweets.append(tweet)
-			else:
-				print "rejected: ", tweet
+				interesting = True
+		
+		# EXCLUSIONS LAST!
+		if not len(tweet.countries):
+			interesting = False
+
+		if interesting:
+			outtweets.append(tweet)
+		else:
+			print "rejected: ", tweet
 	return outtweets
 
 
