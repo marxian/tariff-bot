@@ -3,6 +3,7 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 import tweepy
 import os
 
+import brains
 from secrets import *
 from config import *
 
@@ -28,6 +29,9 @@ class Search(webapp.RequestHandler):
 			results = api.search(spec['twitter_search_term'])
 			for result in results:
 				self.response.out.write('\t' + result.text + '\n')
+				filtertweet(result, spec)
+			import pdb
+			pdb.set_trace()
 			
 
 
@@ -36,7 +40,7 @@ class Search(webapp.RequestHandler):
 application = webapp.WSGIApplication(
 	[
 		('/tweet', Tweet),
-		('/tasks/search', Search),
+		('/search', Search),
 	],
 	debug=True)
 
