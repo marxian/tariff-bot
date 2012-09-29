@@ -48,7 +48,7 @@ def compose(tweet):
 		if tweet.tags:
 			out += ' ' + ' '.join(tweet.tags)
 		out += ' ' + makeVisLink(tweet)
-		return tweet.respond and '@' + tweet.from_user + ' ' + out or out
+		return getattr(tweet, 'respond', False) and '@' + tweet.from_user + ' ' + out or out
 	else:
 		return False #We can't make a tweet :-(
 
