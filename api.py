@@ -2,7 +2,7 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 import tweepy
 import os
-from secrets import *
+from secrets import * #consumer_key, consumer_secret, access_token and access_token_secret are defined here
 
 class Tweet(webapp.RequestHandler):
     def get(self):
