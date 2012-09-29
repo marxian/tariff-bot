@@ -21,6 +21,15 @@ def getIndicatorValue(country, indicator):
 			break;
 	return val
 
+def codeForCountry(country):
+	for co in countryinfo.countries:
+		if co['name'] == country:
+			return co['code']
+
+def makeVisLink(tweet):
+	cos = ";".join([codeForCountry(x) for x in tweet.countries])
+	url = config.configobject['vis_url'].format(country=cos, indicator=tweet.spec['relevant_data'][1])
+	return url
 
 def compose(tweet):
 	template = random.choice(tweet.spec['response_templates'])
@@ -34,6 +43,7 @@ def compose(tweet):
 		if tweet.tags:
 			out += ' ' + ' '.join(tweet.tags)
 
+		out += ' ' + makeVisLink(tweet)
 		return out
 
 

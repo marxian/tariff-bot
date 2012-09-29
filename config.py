@@ -9,7 +9,8 @@ configobject = {
 			"response_templates" : ["Import tariffs in #{country} are {value}%", "There is a {value}% level of import tax in #{country}"]
 		}
 	],
-	"wb_indicator_url": "http://api.worldbank.org/countries/{country}/indicators/{indicator}?per_page=10&date=2006:2015&format=json"
+	"wb_indicator_url": "http://api.worldbank.org/countries/{country}/indicators/{indicator}?per_page=10&date=2006:2015&format=json",
+	"vis_url": "http://dev.wetoffice.com/form.html?country={country}&indicator={indicator}"
 }
 
 
