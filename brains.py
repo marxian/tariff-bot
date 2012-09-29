@@ -4,6 +4,7 @@ import urllib2
 import json
 import math
 import countryinfo
+from google.appengine.ext import db
 
 
 def getIndicatorValue(country, indicator):
@@ -49,6 +50,11 @@ def parse(spec, tweets):
 
 	return tweets
 
+
+parentkey = ""
+class Tweetdb(db.Model):
+	tweetid = IntegerProperty()
+
 def select(tweets):
 	outtweets = []
 	for tweet in tweets:
@@ -64,6 +70,7 @@ def select(tweets):
 				break
 
 		if interesting:
+			Tweetdb(tweetid = tweet.id, parent = parentkey).put()
 			outtweets.append(tweet)
 		else:
 			print "rejected: ", tweet
