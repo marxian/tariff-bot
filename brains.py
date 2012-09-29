@@ -5,6 +5,7 @@ import json
 import math
 import countryinfo
 from google.appengine.ext import db
+import dbstructs
 
 
 def getIndicatorValue(country, indicator):
@@ -56,11 +57,6 @@ def parse(spec, tweets):
 
 	return tweets
 
-
-parentkey = ""
-class Tweetdb(db.Model):
-	tweetid = db.IntegerProperty()
-
 def select(tweets):
 	outtweets = []
 	for tweet in tweets:
@@ -74,9 +70,12 @@ def select(tweets):
 			if not tweet.stemmedwords.intersection(synonyms): 
 				interesting = False
 				break
+		key = db.Key.from_path('TweetParent', 'test', 'TweetDbEntry', str(tweet.id))
+		if dbstructs.TweetDbEntry.get(key):
+			continue #we've already responded or tried to respond to this tweet
 
 		if interesting:
-			Tweetdb(tweetid = tweet.id, parent = parentkey).put()
+			dbstructs.TweetDbEntry(key_name = str(tweet.id), message = tweet.text, parent = dbstructs.parentkey).put()
 			outtweets.append(tweet)
 		else:
 			print "rejected: ", tweet
