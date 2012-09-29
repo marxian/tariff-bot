@@ -52,14 +52,16 @@ def parse(spec, tweets):
 def select(tweets):
 	outtweets = []
 	for tweet in tweets:
-		interesting = False
-		for synonyms in tweet.spec["search_criteria"]:
-			if tweet.stemmedwords.intersection(synonyms): 
-				interesting = True
-		
-		# EXCLUSIONS LAST!
+		interesting = True
+
+		# EXCLUSIONS FIRST!
 		if not len(tweet.countries):
-			interesting = False
+			continue
+
+		for synonyms in tweet.spec["search_criteria"]:
+			if not tweet.stemmedwords.intersection(synonyms): 
+				interesting = False
+				break
 
 		if interesting:
 			outtweets.append(tweet)
