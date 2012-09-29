@@ -1,5 +1,6 @@
 import countryinfo
 configobject = {
+	"my_handle": "@tariffbot",
 	"lexicon" : [
 		{
 			"twitter_search_term" : "trade tariff",

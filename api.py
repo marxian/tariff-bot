@@ -16,6 +16,24 @@ class Tweet(webapp.RequestHandler):
 		self.response.headers['Content-Type'] = 'text/plain'
 		self.response.out.write('Could have tweeted as ' + api.me().name)
 
+class Respond(webapp.RequestHandler):
+	def get(self):
+		self.response.headers['Content-Type'] = 'text/plain'
+		api = brains.t_con()
+		
+		for spec in configobject['lexicon']:
+			for_me = api.search(configobject['my_handle'])
+			results = brains.parse(spec, for_me)
+			results = brains.select(results)
+			for tweet in results:
+				tweet.respond = True
+				self.response.out.write('Tweeted\n')
+				self.response.out.write(brains.send(brains.compose(tweet)))
+				self.response.out.write('\nIn response to:\n')
+				self.response.out.write(tweet.text)
+				self.response.out.write('\n')
+				self.response.out.write('\n')
+
 class Search(webapp.RequestHandler):
 	def get(self):
 		self.response.headers['Content-Type'] = 'text/plain'
@@ -39,6 +57,7 @@ application = webapp.WSGIApplication(
 	[
 		('/tweet', Tweet),
 		('/search', Search),
+		('/respond', Respond),
 	],
 	debug=True)
 

@@ -1,5 +1,8 @@
 cron:
 #these are just placeholder values
 - description: search for relevant tweets to respond to
-  url: /tasks/search
-  schedule: every 20 minutes
+  url: /search
+  schedule: every 10 minutes
+- description: search for mentions to respond to
+  url: /respond
+  schedule: every 10 minutes
