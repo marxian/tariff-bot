@@ -31,8 +31,6 @@ class Search(webapp.RequestHandler):
 			results = brains.parse(spec, results)
 			results = brains.select(results)
 			
-			import pdb
-			pdb.set_trace()
 			for tweet in results:
 				print brains.compose(tweet)
 			

@@ -53,7 +53,7 @@ def parse(spec, tweets):
 
 parentkey = ""
 class Tweetdb(db.Model):
-	tweetid = IntegerProperty()
+	tweetid = db.IntegerProperty()
 
 def select(tweets):
 	outtweets = []
