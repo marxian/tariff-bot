@@ -1,0 +1,6 @@
+configobject = {
+	
+	"subjects" :
+
+
+}
