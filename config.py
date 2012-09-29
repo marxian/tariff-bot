@@ -1,11 +1,10 @@
 import countryinfo
 configobject = {
-
 	"lexicon" : [
 		{
 			"twitter_search_term" : "trade tariff",
 			"search_criteria" : [["trade", "import"],["tariff", "embargo"]],
-			"relevant_data" : ("Imports of goods and services (% of GDP)", 'NE.IMP.GNFS.ZS'),
+			"relevant_data" : ("Tariff rate applied simple mean all products %", 'TM.TAX.MRCH.SM.AR.ZS'),
 			"response_templates" : ["Import tariffs in {country} are {value}%", "There is a {value}% level of import tax in {country}"]
 		}
 	],
