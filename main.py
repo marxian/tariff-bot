@@ -22,7 +22,7 @@ import urllib
 
 class Welcome(webapp.RequestHandler):
   def get(self):
-    question = self.request.get("q")
+    question = self.request.get("question")
     if question != '':
       form = { "q": question }
       form_data = urllib.urlencode(form)
@@ -74,7 +74,7 @@ class Welcome(webapp.RequestHandler):
     old_viz_data=[]
     viz_data=[]
     countries={}
-    if True:
+    try:
       for row in data[1]:
         key = row['country']['id']
         countries[key]=row['country']['value']
@@ -95,7 +95,8 @@ class Welcome(webapp.RequestHandler):
             pass
           pass
         viz_data.append( viz_row )
-
+    except:
+      pass
 
       chart_data={}    
       chart_data['cols'] = [{'id':'date' , 'label':'Date', 'type':'number'},
