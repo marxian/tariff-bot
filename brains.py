@@ -11,6 +11,7 @@ import tweepy
 from secrets import *
 import string
 import re
+from stemming.porter2 import stem
 
 
 def t_con():
@@ -80,8 +81,7 @@ def parse(spec, tweets):
 		tweet.words = re.sub(r"[^{allowed}]+".format(allowed = allowed)," ",tweet.text)
 		tweet.words = set(tweet.words.split(' '))
 
-		tweet.stemmedwords = tweet.words.union(set(word[:-1] for word in tweet.words if word.endswith('s'))) #a horrible hack instead of stemming
-		tweet.stemmedwords = set(s.lower() for s in tweet.stemmedwords)
+		tweet.stemmedwords = set(stem(s.lower()) for s in tweet.words)
 
 		tweet.tags = set(word for word in tweet.words if word.startswith('#'))
 		tweet.users = set(word for word in tweet.words if word.startswith('@'))
@@ -113,8 +113,6 @@ def select(tweets):
 
 		if interesting:
 			outtweets.append(tweet)
-		else:
-			print "rejected: ", tweet
 	return outtweets
 
 
