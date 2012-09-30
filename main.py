@@ -19,6 +19,13 @@ from google.appengine.api import urlfetch
 from gviz_api import DataTable
 from datetime import date
 import urllib
+import os
+
+if os.environ['SERVER_SOFTWARE'].startswith('Development'):
+  host="http://localhost:8080/"
+else:
+  host="http://saunby-net.appspot.com/"
+  pass
 
 class Welcome(webapp.RequestHandler):
   def get(self):
@@ -26,7 +33,7 @@ class Welcome(webapp.RequestHandler):
     if question != '':
       form = { "q": question }
       form_data = urllib.urlencode(form)
-      resp = urlfetch.fetch("http://localhost:8080/ask", payload=form_data, method="POST", follow_redirects=False)
+      resp = urlfetch.fetch(host+"ask", payload=form_data, method="POST", follow_redirects=False)
       if resp.status_code == 200:
         logging.debug("OK")
         logging.debug(result.content)
