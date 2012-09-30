@@ -2,7 +2,7 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 import tweepy
 import os
-import json
+
 import brains
 from secrets import *
 from config import *
@@ -29,10 +29,11 @@ class Ask(webapp.RequestHandler):
 		for spec in configobject['lexicon']:
 			res = brains.select(brains.parse(spec, [Tweet(q)]))
 			for item in res:
-				answers.append(brains.compose(item))
+				answers.append(brains.compose(item).tariff_bot_says)
 		
 		self.response.headers['Content-Type'] = 'application/json'
 		self.response.out.write(json.dumps(answers))
+
 
 class Respond(webapp.RequestHandler):
 	def get(self):
@@ -61,18 +62,23 @@ class Search(webapp.RequestHandler):
 			results = api.search(spec['twitter_search_term'])
 
 			results = brains.parse(spec, results)
-			
-			#for tweet in results:
-			#	self.response.out.write("Saw:\n" + unicode(tweet))
 
 			results = brains.select(results)
+			tweeted = []
+			for result in results:
+				tweeted.append(brains.send(brains.compose(result)))
 			
-			for tweet in results:
-				self.response.out.write("Would have replied to:\n" + unicode(tweet))
+			for tweet in tweeted:
+				self.response.out.write('Tweeted\n')
+				self.response.out.write(tweet.tariff_bot_says)
+				self.response.out.write('\nIn response to:\n')
+				self.response.out.write(tweet.text)
+				self.response.out.write('\n')
+				self.response.out.write('\n')
 				
 application = webapp.WSGIApplication(
 	[
-		('/ask', Ask),
+		('/tweet', Tweet),
 		('/search', Search),
 		('/respond', Respond),
 	],

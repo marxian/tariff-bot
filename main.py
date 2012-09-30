@@ -46,7 +46,8 @@ class Welcome(webapp.RequestHandler):
     end = self.request.get("end")
     if end == '':
       end = '2012'
-
+    country = self.request.get("country")
+    indicator = self.request.get("indicator")
     if indicator == '':
       indicator = 'TM.TAX.MRCH.SM.AR.ZS'
       pass
@@ -113,7 +114,6 @@ class Welcome(webapp.RequestHandler):
     data_table = DataTable( viz_desc )
     data_table.LoadData( viz_data )
     template_values = {
-            'question' : SafeString( question ), 
             'start' : start,
             'end' : end,
             'country' : country,

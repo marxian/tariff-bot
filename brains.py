@@ -62,17 +62,19 @@ def compose(tweet):
 									parent = dbstructs.parentkey
 									).put()
 			
-		return out
-	else:
-		return False #We can't make a tweet :-(
+		tweet.tariff_bot_says = out
 
-def send(text):
-	if text:
-		if not os.environ['SERVER_SOFTWARE'].startswith('Development'):
-			t_con().update_status(text)
-		return "{text}".format(text=text)
 	else:
-		return "nothing... :-("
+		tweet.tariff_bot_says = False #We can't make a tweet :-(
+
+	return tweet
+
+def send(tweet):
+	if tweet.tariff_bot_says:
+		if not os.environ['SERVER_SOFTWARE'].startswith('Development'):
+			reply_to = getattr(tweet, 'respond', False) and getattr(tweet, 'id', False)
+			t_con().update_status(status=tweet.tariff_bot_says, in_reply_to_status_id=reply_to)
+	return tweet
 
 def parse(spec, tweets):
 	for tweet in tweets:
@@ -108,15 +110,14 @@ def select(tweets):
 			if not tweet.stemmedwords.intersection(synonyms): 
 				interesting = False
 				break
-		if getattr(tweet, 'id', False): #if the tweet has no id there's no point trying to identify it. probably from /ask
-			key = db.Key.from_path('TweetParent', 'test', 'TweetDbEntry', str(tweet.id))
-			if dbstructs.TweetDbEntry.get(key):
-				continue #we've already responded or tried to respond to this tweet
+		key = db.Key.from_path('TweetParent', 'test', 'TweetDbEntry', str(tweet.id))
+		if dbstructs.TweetDbEntry.get(key):
+			continue #we've already responded or tried to respond to this tweet
 
 		if interesting:
 			outtweets.append(tweet)
 		else:
-			print "rejected: ", tweet
+			print u"rejected: " + str(tweet) + '\n'
 	return outtweets
 
 
