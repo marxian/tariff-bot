@@ -4,13 +4,19 @@
 
 <form id="wbform" method="get" class="form-inline">
 <label>Indicator</label>
-<input name="indicator" type="text" placeholder="See..." value="{{ indicator }}" />
+<input name="indicator" type="text" value="{{ indicator }}" />
 <label>Country</label>
 <input name="country" type="text" class="input-small" placeholder="GB" value="{{ country }}" />
 <label>Start</label>
 <input name="start" type="text" class="input-small" placeholder="year" value="{{ start }}" /> 
 <label>End</label>
 <input name="end" type="text" class="input-small" placeholder="year" value="{{ end }}" /> 
+<button type="submit" class="btn">Submit</button>
+</form>
+<form id="qform" method="get" class="form-inline">
+<p>{{ question }}</p>
+<label>Ask a question</label>
+<input name="q" type="text" class="input-xxlarge" />?
 <button type="submit" class="btn">Submit</button>
 </form>
 
