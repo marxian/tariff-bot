@@ -9,6 +9,8 @@ from google.appengine.ext import db
 import dbstructs
 import tweepy
 from secrets import *
+import string
+import re
 
 def t_con():
 	auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
@@ -63,8 +65,11 @@ def send(text):
 
 def parse(spec, tweets):
 	for tweet in tweets:
-		tweet.text = tweet.text.lower()
-		tweet.words = set(tweet.text.split(' '))
+		
+		allowed = string.ascii_letters + "@#'" #remove anything not in allowed string
+		tweet.words = re.sub(r"[^{allowed}]+".format(allowed = allowed)," ",tweet.text.lower())
+		tweet.words = set(tweet.words.split(' '))
+
 		tweet.stemmedwords = tweet.words.union(set(word[:-1] for word in tweet.words if word.endswith('s'))) #a horrible hack instead of stemming
 		tweet.tags = set(word for word in tweet.words if word.startswith('#'))
 		tweet.users = set(word for word in tweet.words if word.startswith('@'))

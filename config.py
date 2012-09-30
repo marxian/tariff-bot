@@ -10,7 +10,7 @@ configobject = {
 		},
 		{
 			"twitter_search_term" : "population",
-			"search_criteria" : [["population",],["total",]],
+			"search_criteria" : [["population", "people"],["total","number"]],
 			"relevant_data" : ("Total Population", 'SP.POP.TOTL'),
 			"response_templates" : ["The population of {country} is {value}", "There are {value} people living in {country}"]
 		},
@@ -28,9 +28,9 @@ configobject = {
 
 
 #countries gets transformed to the format (string, set) here
-countries = [x['name'] for x in countryinfo.countries]
+countries = [" ".join((x['name'], x['code'])) for x in countryinfo.countries]
 for i in range(len(countries)):
-	countries[i] = (countries[i], set(countries[i].lower().split(' ')))
+	countries[i] = (countries[i], set(countries[i].lower().split(' ')).union())
 configobject['countries'] = countries
 
 if __name__ == '__main__':

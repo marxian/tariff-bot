@@ -43,6 +43,12 @@ class Search(webapp.RequestHandler):
 			results = api.search(spec['twitter_search_term'])
 
 			results = brains.parse(spec, results)
+			for tweet in results:
+				self.response.out.write('Tweet')
+				self.response.out.write(tweet.text)
+				self.response.out.write(str(tweet.stemmedwords) + '\n')
+				self.response.out.write(str(tweet.countries) + '\n')
+
 			results = brains.select(results)
 			
 			for tweet in results:
