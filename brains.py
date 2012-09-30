@@ -54,24 +54,27 @@ def compose(tweet):
 		out += ' ' + makeVisLink(tweet)
 		out = getattr(tweet, 'respond', False) and '@' + tweet.from_user + ' ' + out or out
 
-		#add the response tweet to the db
-		dbstructs.TweetDbEntry(key_name = str(tweet.id),
-								message = tweet.text,
-								response = out,
-								parent = dbstructs.parentkey
-								).put()
-		
-		return out
-	else:
-		return False #We can't make a tweet :-(
+		if getattr(tweet, 'id', False): #if the tweet has no id there's no point trying to identify it. probably from /ask
+			#add the response tweet to the db
+			dbstructs.TweetDbEntry(key_name = str(tweet.id),
+									message = tweet.text,
+									response = out,
+									parent = dbstructs.parentkey
+									).put()
+			
+		tweet.tariff_bot_says = out
 
-def send(text):
-	if text:
-		if not os.environ['SERVER_SOFTWARE'].startswith('Development'):
-			t_con().update_status(text)
-		return "{text}".format(text=text)
 	else:
-		return "nothing... :-("
+		tweet.tariff_bot_says = False #We can't make a tweet :-(
+
+	return tweet
+
+def send(tweet):
+	if tweet.tariff_bot_says:
+		if not os.environ['SERVER_SOFTWARE'].startswith('Development'):
+			reply_to = getattr(tweet, 'respond', False) and getattr(tweet, 'id', False)
+			t_con().update_status(status=tweet.tariff_bot_says, in_reply_to_status_id=reply_to)
+	return tweet
 
 def parse(spec, tweets):
 	for tweet in tweets:
@@ -114,7 +117,7 @@ def select(tweets):
 		if interesting:
 			outtweets.append(tweet)
 		else:
-			print u"rejected: ", tweet
+			print u"rejected: " + str(tweet) + '\n'
 	return outtweets
 
 
