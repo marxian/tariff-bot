@@ -2,19 +2,37 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 import tweepy
 import os
-
+import json
 import brains
 from secrets import *
 from config import *
 import brains
 
-class Tweet(webapp.RequestHandler):
-    def get(self):
-		api = brains.t_con()
-		if not os.environ['SERVER_SOFTWARE'].startswith('Development'):
-			api.update_status('Ahem. Testing. Testing. 1, 2, 3...')
-		self.response.headers['Content-Type'] = 'text/plain'
-		self.response.out.write('Could have tweeted as ' + api.me().name)
+def tweet_to_string(tweet):
+	return u"\n".join((
+		u"text: " + unicode(tweet.text),
+		u"words: " + unicode(tweet.words),
+		u"id: " + unicode(tweet.id),
+		u"\n",
+		))
+
+tweepy.models.SearchResult.__repr__ = tweet_to_string
+
+class Tweet():
+	def __init__(self, text):
+		self.text = text
+
+class Ask(webapp.RequestHandler):
+    def post(self):
+		q = self.request.POST.get('q')
+		answers = []
+		for spec in configobject['lexicon']:
+			res = brains.select(brains.parse(spec, [Tweet(q)]))
+			for item in res:
+				answers.append(brains.compose(item))
+		
+		self.response.headers['Content-Type'] = 'application/json'
+		self.response.out.write(json.dumps(answers))
 
 class Respond(webapp.RequestHandler):
 	def get(self):
@@ -43,19 +61,18 @@ class Search(webapp.RequestHandler):
 			results = api.search(spec['twitter_search_term'])
 
 			results = brains.parse(spec, results)
+			
+			#for tweet in results:
+			#	self.response.out.write("Saw:\n" + unicode(tweet))
+
 			results = brains.select(results)
 			
 			for tweet in results:
-				self.response.out.write('Tweeted\n')
-				self.response.out.write(brains.send(brains.compose(tweet)))
-				self.response.out.write('\nIn response to:\n')
-				self.response.out.write(tweet.text)
-				self.response.out.write('\n')
-				self.response.out.write('\n')
-
+				self.response.out.write("Would have replied to:\n" + unicode(tweet))
+				
 application = webapp.WSGIApplication(
 	[
-		('/tweet', Tweet),
+		('/ask', Ask),
 		('/search', Search),
 		('/respond', Respond),
 	],

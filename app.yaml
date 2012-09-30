@@ -19,6 +19,17 @@ handlers:
   static_files: static/\1
   upload: static/(.*)
 
+- url: /search
+  script: api.py
+  login: admin
+
+- url: /respond
+  script: api.py
+  login: admin
+
+- url: /ask
+  script: api.py
+
 - url: /form.*
   script: main.py
 
@@ -30,3 +41,4 @@ handlers:
 
 - url: /.*
   script: api.py
+

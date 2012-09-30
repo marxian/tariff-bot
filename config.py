@@ -10,12 +10,12 @@ configobject = {
 		},
 		{
 			"twitter_search_term" : "population",
-			"search_criteria" : [["population",],["total",]],
+			"search_criteria" : [["population", "people"],["total","number"]],
 			"relevant_data" : ("Total Population", 'SP.POP.TOTL'),
 			"response_templates" : ["The population of {country} is {value}", "There are {value} people living in {country}"]
 		},
 		{
-			"twitter_search_term" : "life",
+			"twitter_search_term" : "expectancy",
 			"search_criteria" : [["life","lifetime","age"],["expectancy","average"]],
 			"relevant_data" : ("Life expectancy at birth", 'SP.DYN.LE00.IN'),
 			"response_templates" : ["The life expectancy of someone in {country} is around {value}", "On average, people in {country} live to {value} years old"]
@@ -28,10 +28,13 @@ configobject = {
 
 
 #countries gets transformed to the format (string, set) here
-countries = [x['name'] for x in countryinfo.countries]
-for i in range(len(countries)):
-	countries[i] = (countries[i], set(countries[i].lower().split(' ')))
-configobject['countries'] = countries
+configobject['countries'] = []
+for country in countryinfo.countries:
+	configobject['countries'].append( {
+						"name" : country['name'],
+						"match_criteria" : ( set(country['name'].lower().split(' ')), set([country['code']]) )
+						}
+						)
 
 if __name__ == '__main__':
 	print configobject
