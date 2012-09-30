@@ -18,11 +18,21 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.api import urlfetch
 from gviz_api import DataTable
 from datetime import date
+import urllib
 
 class Welcome(webapp.RequestHandler):
   def get(self):
     question = self.request.get("q")
     if question != '':
+      form = { "q": question }
+      form_data = urllib.urlencode(form)
+      resp = urlfetch.fetch("http://localhost:8080/ask", payload=form_data, method="POST", follow_redirects=False)
+      if resp.status_code == 200:
+        logging.debug("OK")
+        logging.debug(result.content)
+      else:
+        logging.debug("FAILED ON QUESTION")
+        pass
       country = 'US'
       indicator = 'TM.TAX.MRCH.SM.AR.ZS'
       pass
