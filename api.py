@@ -2,7 +2,7 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 import tweepy
 import os
-
+import json
 import brains
 from secrets import *
 from config import *
@@ -18,13 +18,21 @@ def tweet_to_string(tweet):
 
 tweepy.models.SearchResult.__repr__ = tweet_to_string
 
-class Tweet(webapp.RequestHandler):
-    def get(self):
-		api = brains.t_con()
-		if not os.environ['SERVER_SOFTWARE'].startswith('Development'):
-			api.update_status('Ahem. Testing. Testing. 1, 2, 3...')
-		self.response.headers['Content-Type'] = 'text/plain'
-		self.response.out.write('Could have tweeted as ' + api.me().name)
+class Tweet():
+	def __init__(self, text):
+		self.text = text
+
+class Ask(webapp.RequestHandler):
+    def post(self):
+		q = self.request.POST.get('q')
+		answers = []
+		for spec in configobject['lexicon']:
+			res = brains.select(brains.parse(spec, [Tweet(q)]))
+			for item in res:
+				answers.append(brains.compose(item))
+		
+		self.response.headers['Content-Type'] = 'application/json'
+		self.response.out.write(json.dumps(answers))
 
 class Respond(webapp.RequestHandler):
 	def get(self):
@@ -68,7 +76,7 @@ class Search(webapp.RequestHandler):
 
 application = webapp.WSGIApplication(
 	[
-		('/tweet', Tweet),
+		('/ask', Ask),
 		('/search', Search),
 		('/respond', Respond),
 	],

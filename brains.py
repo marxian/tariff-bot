@@ -54,13 +54,14 @@ def compose(tweet):
 		out += ' ' + makeVisLink(tweet)
 		out = getattr(tweet, 'respond', False) and '@' + tweet.from_user + ' ' + out or out
 
-		#add the response tweet to the db
-		dbstructs.TweetDbEntry(key_name = str(tweet.id),
-								message = tweet.text,
-								response = out,
-								parent = dbstructs.parentkey
-								).put()
-		
+		if getattr(tweet, 'id', False): #if the tweet has no id there's no point trying to identify it. probably from /ask
+			#add the response tweet to the db
+			dbstructs.TweetDbEntry(key_name = str(tweet.id),
+									message = tweet.text,
+									response = out,
+									parent = dbstructs.parentkey
+									).put()
+			
 		return out
 	else:
 		return False #We can't make a tweet :-(
@@ -107,9 +108,10 @@ def select(tweets):
 			if not tweet.stemmedwords.intersection(synonyms): 
 				interesting = False
 				break
-		key = db.Key.from_path('TweetParent', 'test', 'TweetDbEntry', str(tweet.id))
-		if dbstructs.TweetDbEntry.get(key):
-			continue #we've already responded or tried to respond to this tweet
+		if getattr(tweet, 'id', False): #if the tweet has no id there's no point trying to identify it. probably from /ask
+			key = db.Key.from_path('TweetParent', 'test', 'TweetDbEntry', str(tweet.id))
+			if dbstructs.TweetDbEntry.get(key):
+				continue #we've already responded or tried to respond to this tweet
 
 		if interesting:
 			outtweets.append(tweet)
