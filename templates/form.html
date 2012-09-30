@@ -13,11 +13,13 @@
 <button type="submit" class="btn">Submit</button>
 </form>
 <h2>{{ question }}</h2>
+<div>
 <label>Question</label>
-<form id="qform" method="get" class="form-inline">
-<input name="question" type="text" class="input-xxlarge" />?
-<button type="submit" class="btn">Submit</button>
-</form>
+  <form id="qform" method="get" class="form-inline">
+  <input name="question" type="text" class="input-xxlarge" />?
+  <button type="submit" class="btn">Submit</button>
+  </form>
+</div>
 <h3>{{ title }}</h3>
 <div id="table_div" style="width: 900px; height: 500px;"></div>
 <p>Data from <a href="http://data.worldbank.org/">World Bank</a></p>
@@ -25,6 +27,29 @@
 {% endblock content %}
 
 {% block scripts %}
+<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js'></script>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('#qform').on('submit', function(evt){
+      var self = evt.currentTarget;
+      evt.preventDefault();
+      evt.stopImmediatePropagation();
+      var query = {q: $(self).find('input:eq(0)').val()};
+      $.ajax({
+        url: '/ask',
+        type: 'POST',
+        data: query,
+        dataType: 'json'
+      }).done(function(data){
+        $.each(data, function(i, v){
+          $(self).parent().append('<h5>'+v+'</h5>');
+        });
+        
+      });
+
+    });
+  });
+</script>
 <script type='text/javascript' src='https://www.google.com/jsapi'></script>
 <script type='text/javascript'>
       google.load('visualization', '1', {packages:['table','corechart']});
