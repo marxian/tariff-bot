@@ -6,8 +6,8 @@ class TweetParent(db.Model):
 
 
 class TweetDbEntry(db.Model):
-	message = db.StringProperty(required = True)
-	response = db.StringProperty()
+	message = db.TextProperty(required = True)
+	response = db.TextProperty()
 
 tweetparent = TweetParent(key_name = "test")
 parentkey = tweetparent.key()

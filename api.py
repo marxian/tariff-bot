@@ -44,10 +44,18 @@ class Search(webapp.RequestHandler):
 
 			results = brains.parse(spec, results)
 			for tweet in results:
-				self.response.out.write('Tweet')
+				self.response.out.write('Tweet\n')
 				self.response.out.write(tweet.text)
-				self.response.out.write(str(tweet.stemmedwords) + '\n')
-				self.response.out.write(str(tweet.countries) + '\n')
+				self.response.out.write('\n')
+				self.response.out.write(tweet.stemmedwords)
+				self.response.out.write('\n')
+				#self.response.out.write(tweet.id_str)
+				#self.response.out.write('\n')
+				self.response.out.write(tweet.id)
+				self.response.out.write('\n')
+				self.response.out.write(tweet.countries)
+				self.response.out.write('\n')
+				self.response.out.write('\n')
 
 			results = brains.select(results)
 			

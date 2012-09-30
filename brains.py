@@ -44,13 +44,23 @@ def makeVisLink(tweet):
 
 def compose(tweet):
 	template = random.choice(tweet.spec['response_templates'])
-	value = getIndicatorValue(codeForCountry(tweet.countries[0]), tweet.spec['relevant_data'][1])
+	country = random.choice(list(tweet.countries))
+	value = getIndicatorValue(codeForCountry(country), tweet.spec['relevant_data'][1])
 	if value:
-		out = template.format(country=tweet.countries[0], value=value)
+		out = template.format(country=country, value=value)
 		if tweet.tags:
 			out += ' ' + ' '.join(tweet.tags)
 		out += ' ' + makeVisLink(tweet)
-		return getattr(tweet, 'respond', False) and '@' + tweet.from_user + ' ' + out or out
+		out = getattr(tweet, 'respond', False) and '@' + tweet.from_user + ' ' + out or out
+
+		#add the response tweet to the db
+		dbstructs.TweetDbEntry(key_name = str(tweet.id),
+								message = tweet.text,
+								response = out,
+								parent = dbstructs.parentkey
+								).put()
+		
+		return out
 	else:
 		return False #We can't make a tweet :-(
 
@@ -67,13 +77,19 @@ def parse(spec, tweets):
 	for tweet in tweets:
 		
 		allowed = string.ascii_letters + "@#'" #remove anything not in allowed string
-		tweet.words = re.sub(r"[^{allowed}]+".format(allowed = allowed)," ",tweet.text.lower())
+		tweet.words = re.sub(r"[^{allowed}]+".format(allowed = allowed)," ",tweet.text)
 		tweet.words = set(tweet.words.split(' '))
 
 		tweet.stemmedwords = tweet.words.union(set(word[:-1] for word in tweet.words if word.endswith('s'))) #a horrible hack instead of stemming
+		tweet.stemmedwords = set(s.lower() for s in tweet.stemmedwords)
+
 		tweet.tags = set(word for word in tweet.words if word.startswith('#'))
 		tweet.users = set(word for word in tweet.words if word.startswith('@'))
-		tweet.countries = [country[0] for country in config.configobject["countries"] if country[1].issubset(tweet.words)]	
+		tweet.countries = set(country['name'] 
+							for country in config.configobject["countries"]
+							for matchset in country['match_criteria'] 
+							if matchset.issubset(tweet.stemmedwords) or matchset.issubset(tweet.words)
+							)
 		tweet.spec = spec
 
 	return tweets
@@ -96,7 +112,6 @@ def select(tweets):
 			continue #we've already responded or tried to respond to this tweet
 
 		if interesting:
-			dbstructs.TweetDbEntry(key_name = str(tweet.id), message = tweet.text, parent = dbstructs.parentkey).put()
 			outtweets.append(tweet)
 		else:
 			print "rejected: ", tweet
