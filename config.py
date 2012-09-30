@@ -26,12 +26,8 @@ configobject = {
 	"vis_url": "http://dev.wetoffice.com/form.html?country={country}&indicator={indicator}"
 }
 
-from stemming.porter2 import stem
-#countries gets transformed to the format (string, set) here
-for spec in configobject['lexicon']:
-	for i in range(len(spec["search_criteria"])):
-		spec["search_criteria"][i] = set(map(stem, spec["search_criteria"][i]))
 
+#countries gets transformed to the format (string, set) here
 configobject['countries'] = []
 for country in countryinfo.countries:
 	configobject['countries'].append( {
@@ -41,4 +37,4 @@ for country in countryinfo.countries:
 						)
 
 if __name__ == '__main__':
-	print configobject["lexicon"]
+	print configobject

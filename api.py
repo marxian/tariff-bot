@@ -8,12 +8,10 @@ from secrets import *
 from config import *
 import brains
 
-
 def tweet_to_string(tweet):
 	return u"\n".join((
 		u"text: " + unicode(tweet.text),
 		u"words: " + unicode(tweet.words),
-		u"stemmed words: " + unicode(tweet.stemmedwords),
 		u"id: " + unicode(tweet.id),
 		u"\n",
 		))
@@ -63,7 +61,7 @@ class Search(webapp.RequestHandler):
 			
 			for tweet in results:
 				self.response.out.write("Would have replied to:\n" + unicode(tweet))
-
+				
 application = webapp.WSGIApplication(
 	[
 		('/tweet', Tweet),
