@@ -2,7 +2,7 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 import tweepy
 import os
-
+import json
 import brains
 from secrets import *
 from config import *
@@ -34,7 +34,6 @@ class Ask(webapp.RequestHandler):
 		self.response.headers['Content-Type'] = 'application/json'
 		self.response.out.write(json.dumps(answers))
 
-
 class Respond(webapp.RequestHandler):
 	def get(self):
 		self.response.headers['Content-Type'] = 'text/plain'
@@ -47,7 +46,7 @@ class Respond(webapp.RequestHandler):
 			for tweet in results:
 				tweet.respond = True
 				self.response.out.write('Tweeted\n')
-				self.response.out.write(brains.send(brains.compose(tweet)))
+				self.response.out.write(brains.send(brains.compose(tweet)).tariff_bot_says)
 				self.response.out.write('\nIn response to:\n')
 				self.response.out.write(tweet.text)
 				self.response.out.write('\n')
@@ -78,7 +77,7 @@ class Search(webapp.RequestHandler):
 				
 application = webapp.WSGIApplication(
 	[
-		('/tweet', Tweet),
+		('/ask', Ask),
 		('/search', Search),
 		('/respond', Respond),
 	],

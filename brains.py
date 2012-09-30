@@ -11,6 +11,7 @@ import tweepy
 from secrets import *
 import string
 import re
+import md5
 
 
 def t_con():
@@ -63,7 +64,6 @@ def compose(tweet):
 									).put()
 			
 		tweet.tariff_bot_says = out
-
 	else:
 		tweet.tariff_bot_says = False #We can't make a tweet :-(
 
@@ -71,9 +71,19 @@ def compose(tweet):
 
 def send(tweet):
 	if tweet.tariff_bot_says:
-		if not os.environ['SERVER_SOFTWARE'].startswith('Development'):
-			reply_to = getattr(tweet, 'respond', False) and getattr(tweet, 'id', False)
-			t_con().update_status(status=tweet.tariff_bot_says, in_reply_to_status_id=reply_to)
+		tweet_hash = md5.md5(tweet.tariff_bot_says).hexdigest()
+		key = db.Key.from_path('TweetParent', 'outputs', 'TweetDbEntry', tweet_hash)
+		if dbstructs.TweetDbEntry.get(key):
+			return tweet #we've already responded or tried to respond to this tweet
+		else:
+			if not os.environ['SERVER_SOFTWARE'].startswith('Development'):
+				reply_to = getattr(tweet, 'respond', False) and getattr(tweet, 'id', False)
+				t_con().update_status(status=tweet.tariff_bot_says, in_reply_to_status_id=reply_to)
+			dbstructs.TweetDbEntry(key_name = tweet_hash,
+									message = tweet.text,
+									response = tweet.tariff_bot_says,
+									parent = dbstructs.outputkey
+									).put()
 	return tweet
 
 def parse(spec, tweets):
@@ -110,14 +120,13 @@ def select(tweets):
 			if not tweet.stemmedwords.intersection(synonyms): 
 				interesting = False
 				break
-		key = db.Key.from_path('TweetParent', 'test', 'TweetDbEntry', str(tweet.id))
-		if dbstructs.TweetDbEntry.get(key):
-			continue #we've already responded or tried to respond to this tweet
+		if getattr(tweet, 'id', False): #if the tweet has no id there's no point trying to identify it. probably from /ask
+			key = db.Key.from_path('TweetParent', 'test', 'TweetDbEntry', str(tweet.id))
+			if dbstructs.TweetDbEntry.get(key):
+				continue #we've already responded or tried to respond to this tweet
 
 		if interesting:
 			outtweets.append(tweet)
-		else:
-			print u"rejected: " + str(tweet) + '\n'
 	return outtweets
 
 
