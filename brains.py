@@ -12,6 +12,7 @@ from secrets import *
 import string
 import re
 
+
 def t_con():
 	auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 	auth.set_access_token(access_token, access_token_secret)
@@ -72,10 +73,9 @@ def send(text):
 	else:
 		return "nothing... :-("
 
-
 def parse(spec, tweets):
 	for tweet in tweets:
-		
+
 		allowed = string.ascii_letters + "@#'" #remove anything not in allowed string
 		tweet.words = re.sub(r"[^{allowed}]+".format(allowed = allowed)," ",tweet.text)
 		tweet.words = set(tweet.words.split(' '))

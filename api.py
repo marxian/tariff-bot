@@ -8,6 +8,16 @@ from secrets import *
 from config import *
 import brains
 
+def tweet_to_string(tweet):
+	return u"\n".join((
+		u"text: " + unicode(tweet.text),
+		u"words: " + unicode(tweet.words),
+		u"id: " + unicode(tweet.id),
+		u"\n",
+		))
+
+tweepy.models.SearchResult.__repr__ = tweet_to_string
+
 class Tweet(webapp.RequestHandler):
     def get(self):
 		api = brains.t_con()
@@ -44,18 +54,7 @@ class Search(webapp.RequestHandler):
 
 			results = brains.parse(spec, results)
 			for tweet in results:
-				self.response.out.write('Tweet\n')
-				self.response.out.write(tweet.text)
-				self.response.out.write('\n')
-				self.response.out.write(tweet.stemmedwords)
-				self.response.out.write('\n')
-				#self.response.out.write(tweet.id_str)
-				#self.response.out.write('\n')
-				self.response.out.write(tweet.id)
-				self.response.out.write('\n')
-				self.response.out.write(tweet.countries)
-				self.response.out.write('\n')
-				self.response.out.write('\n')
+				self.response.out.write(tweet)
 
 			results = brains.select(results)
 			
