@@ -61,19 +61,15 @@ class Search(webapp.RequestHandler):
 			results = api.search(spec['twitter_search_term'])
 
 			results = brains.parse(spec, results)
-			for tweet in results:
-				self.response.out.write(tweet)
+			
+			#for tweet in results:
+			#	self.response.out.write("Saw:\n" + unicode(tweet))
 
 			results = brains.select(results)
 			
 			for tweet in results:
-				self.response.out.write('Tweeted\n')
-				self.response.out.write(brains.send(brains.compose(tweet)))
-				self.response.out.write('\nIn response to:\n')
-				self.response.out.write(tweet.text)
-				self.response.out.write('\n')
-				self.response.out.write('\n')
-
+				self.response.out.write("Would have replied to:\n" + unicode(tweet))
+				
 application = webapp.WSGIApplication(
 	[
 		('/ask', Ask),
