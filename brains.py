@@ -71,8 +71,8 @@ def compose(tweet):
 
 def send(tweet):
 	if tweet.tariff_bot_says:
-		tweet_hash = hashlib.md5(tweet.tariff_bot_says).digest()
-		key = db.Key.from_path('TweetParent', 'outputs', 'TweetDbEntry', tweet_hash)
+		tweet_hash = hashlib.md5(tweet.tariff_bot_says).hexdigest()
+		key = db.Key.from_path('TweetParent', 'outputs', 'TweetDbEntry', str(tweet_hash))
 		if dbstructs.TweetDbEntry.get(key):
 			return tweet #we've already responded or tried to respond to this tweet
 		else:
