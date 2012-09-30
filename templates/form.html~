@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<form id="wbform" method="get" class="form-inline">
+<label>Indicator</label>
+<input name="indicator" type="text" placeholder="See..." value="{{ indicator }}" />
+<label>Country</label>
+<input name="country" type="text" class="input-small" placeholder="GB" value="{{ country }}" />
+<label>Start</label>
+<input name="start" type="text" class="input-small" placeholder="year" value="{{ start }}" /> 
+<label>End</label>
+<input name="end" type="text" class="input-small" placeholder="year" value="{{ end }}" /> 
+<button type="submit" class="btn">Submit</button>
+</form>
+
+<h3>{{ title }}</h3>
+<div id="table_div" style="width: 900px; height: 500px;"></div>
+
+{% endblock content %}
+
+{% block scripts %}
+<script type='text/javascript' src='https://www.google.com/jsapi'></script>
+<script type='text/javascript'>
+      google.load('visualization', '1', {packages:['table','corechart']});
+      /*
+      google.setOnLoadCallback(drawTable);
+      function drawTable() {
+        var data = new google.visualization.DataTable( {{ data|safe }});
+        var table = new google.visualization.Table(document.getElementById('table_div'));
+        table.draw(data, {showRowNumber: true});
+      }
+      */
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = new google.visualization.DataTable( {{ data|safe }});
+        var chart = new google.visualization.LineChart(document.getElementById('table_div'));
+        chart.draw(data, {vAxis:{title:"{{ title }}" }, hAxis:{title:"Year"}});
+      }
+
+    </script>
+
+{% endblock scripts %}
