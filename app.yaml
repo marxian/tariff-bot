@@ -1,9 +1,44 @@
-application: myapp
+application: saunby-net
 version: 1
 runtime: python27
 api_version: 1
 threadsafe: false
 
+libraries:
+- name: django
+  version: 1.3
+
+
 handlers:
+
+- url: /favicon.ico
+  static_files: favicon.ico
+  upload: favicon.ico
+
+- url: /static/(.*)
+  static_files: static/\1
+  upload: static/(.*)
+
+- url: /search
+  script: api.py
+  login: admin
+
+- url: /respond
+  script: api.py
+  login: admin
+
+- url: /ask
+  script: api.py
+
+- url: /form.*
+  script: main.py
+
+- url: /globe.*
+  script: main.py
+
+- url: /heatmap.*
+  script: heatmap.py
+
 - url: /.*
   script: api.py
+

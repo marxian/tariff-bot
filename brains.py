@@ -63,7 +63,6 @@ def compose(tweet):
 									).put()
 			
 		tweet.tariff_bot_says = out
-
 	else:
 		tweet.tariff_bot_says = False #We can't make a tweet :-(
 
@@ -110,14 +109,13 @@ def select(tweets):
 			if not tweet.stemmedwords.intersection(synonyms): 
 				interesting = False
 				break
-		key = db.Key.from_path('TweetParent', 'test', 'TweetDbEntry', str(tweet.id))
-		if dbstructs.TweetDbEntry.get(key):
-			continue #we've already responded or tried to respond to this tweet
+		if getattr(tweet, 'id', False): #if the tweet has no id there's no point trying to identify it. probably from /ask
+			key = db.Key.from_path('TweetParent', 'test', 'TweetDbEntry', str(tweet.id))
+			if dbstructs.TweetDbEntry.get(key):
+				continue #we've already responded or tried to respond to this tweet
 
 		if interesting:
 			outtweets.append(tweet)
-		else:
-			print u"rejected: " + str(tweet) + '\n'
 	return outtweets
 
 
