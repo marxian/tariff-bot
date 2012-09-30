@@ -114,7 +114,7 @@ def select(tweets):
 		if interesting:
 			outtweets.append(tweet)
 		else:
-			print "rejected: ", tweet
+			print u"rejected: ", tweet
 	return outtweets
 
 
