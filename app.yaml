@@ -5,5 +5,15 @@ api_version: 1
 threadsafe: false
 
 handlers:
-- url: /.*
+- url: /search
   script: api.py
+  login: admin
+
+- url: /respond
+  script: api.py
+  login: admin
+
+- url: /ask
+  script: api.py
+
+
