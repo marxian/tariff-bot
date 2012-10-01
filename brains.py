@@ -96,7 +96,7 @@ def parse(spec, tweets):
 		tweet.stemmedwords = tweet.words.union(set(word[:-1] for word in tweet.words if word.endswith('s'))) #a horrible hack instead of stemming
 		tweet.stemmedwords = set(s.lower() for s in tweet.stemmedwords)
 
-		tweet.tags = set(word for word in tweet.words if word.startswith('#'))
+		tweet.tags = set(re.findall(r'\s(#[^\s]+)'," "+ tweet.text))
 		tweet.users = set(word for word in tweet.words if word.startswith('@'))
 		tweet.countries = set(country['name'] 
 							for country in config.configobject["countries"]

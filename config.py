@@ -12,7 +12,7 @@ configobject = {
 			"twitter_search_term" : "population",
 			"search_criteria" : [["population", "people"]],
 			"relevant_data" : ("Total Population", 'SP.POP.TOTL'),
-			"response_templates" : ["The population of {country} is {value:,.0f}", "There are {value} people living in {country}"]
+			"response_templates" : ["The population of {country} is {value:,.0f}", "There are {value:,.0f} people living in {country}"]
 		},
 		{
 			"twitter_search_term" : "expectancy",
