@@ -12,13 +12,13 @@ configobject = {
 			"twitter_search_term" : "population",
 			"search_criteria" : [["population", "people"]],
 			"relevant_data" : ("Total Population", 'SP.POP.TOTL'),
-			"response_templates" : ["The population of {country} is {value}", "There are {value} people living in {country}"]
+			"response_templates" : ["The population of {country} is {value:,.0f}", "There are {value} people living in {country}"]
 		},
 		{
 			"twitter_search_term" : "expectancy",
 			"search_criteria" : [["life","lifetime","age"],["expectancy","average"]],
 			"relevant_data" : ("Life expectancy at birth", 'SP.DYN.LE00.IN'),
-			"response_templates" : ["The life expectancy of someone in {country} is around {value}", "On average, people in {country} live to {value} years old"]
+			"response_templates" : ["The life expectancy of someone in {country} is around {value:.0f}", "On average, people in {country} live to {value:.0f} years old"]
 		},
 		{
 			"twitter_search_term" : "unemployment",

@@ -12,6 +12,7 @@ def tweet_to_string(tweet):
 	return u"\n".join((
 		u"text: " + unicode(tweet.text),
 		u"words: " + unicode(tweet.words),
+		u"tags: " + unicode(tweet.tags),
 		u"id: " + unicode(tweet.id),
 		u"\n",
 		))
@@ -42,7 +43,7 @@ class Respond(webapp.RequestHandler):
 		for spec in configobject['lexicon']:
 			for_me = api.search(configobject['my_handle'])
 			results = brains.parse(spec, for_me)
-			results = brains.select(results)
+			results = brains.select(results, needhashes = False)
 			for tweet in results:
 				tweet.respond = True
 				self.response.out.write('Tweeted\n')
@@ -65,6 +66,7 @@ class Search(webapp.RequestHandler):
 			results = brains.select(results)
 			tweeted = []
 			for result in results:
+				self.response.out.write("found: " + unicode(results))
 				tweeted.append(brains.send(brains.compose(result)))
 			
 			for tweet in tweeted:
