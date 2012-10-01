@@ -107,13 +107,15 @@ def parse(spec, tweets):
 
 	return tweets
 
-def select(tweets):
+def select(tweets, needhashes = True):
 	outtweets = []
 	for tweet in tweets:
 		interesting = True
 
 		# EXCLUSIONS FIRST!
-		if (not tweet.countries) or (not tweet.tags):
+		if not tweet.countries:
+			continue
+		if needhashes and not tweet.tags:
 			continue
 
 		for synonyms in tweet.spec["search_criteria"]:
