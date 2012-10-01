@@ -113,7 +113,7 @@ def select(tweets):
 		interesting = True
 
 		# EXCLUSIONS FIRST!
-		if not len(tweet.countries):
+		if (not tweet.countries) or (not tweet.tags):
 			continue
 
 		for synonyms in tweet.spec["search_criteria"]:
