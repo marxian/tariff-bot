@@ -44,7 +44,7 @@ class Respond(webapp.RequestHandler):
 		for spec in configobject['lexicon']:
 			for_me = api.search(configobject['my_handle'])
 			results = brains.parse(spec, for_me)
-			results = brains.select(results, needhashes = False)
+			results = brains.select(results)
 			for tweet in results:
 				tweet.respond = True
 				self.response.out.write('Tweeted\n')
@@ -64,7 +64,7 @@ class Search(webapp.RequestHandler):
 
 			results = brains.parse(spec, results)
 
-			results = brains.select(results)
+			results = brains.select(results, needhashtags = True)
 			tweeted = []
 			for result in results:
 				self.response.out.write(u"found: " + unicode(results))

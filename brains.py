@@ -107,7 +107,7 @@ def parse(spec, tweets):
 
 	return tweets
 
-def select(tweets, needhashes = True):
+def select(tweets, needhashtags = False):
 	outtweets = []
 	for tweet in tweets:
 		interesting = True
