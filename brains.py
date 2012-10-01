@@ -40,7 +40,7 @@ def codeForCountry(country):
 			return co['code']
 
 def makeVisLink(tweet):
-	cos = ";".join([codeForCountry(x) for x in tweet.countries])
+	cos = "%3B".join([codeForCountry(x) for x in tweet.countries])
 	url = config.configobject['vis_url'].format(country=cos, indicator=tweet.spec['relevant_data'][1])
 	return url
 
@@ -115,7 +115,7 @@ def select(tweets, needhashtags = False):
 		# EXCLUSIONS FIRST!
 		if not tweet.countries:
 			continue
-		if needhashes and not tweet.tags:
+		if needhashtags and not tweet.tags:
 			continue
 
 		for synonyms in tweet.spec["search_criteria"]:
