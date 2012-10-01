@@ -8,6 +8,7 @@ class TweetParent(db.Model):
 class TweetDbEntry(db.Model):
 	message = db.TextProperty(required = True)
 	response = db.TextProperty()
+	timestamp = db.DateTimeProperty(auto_now_add=True)
 
 tweetparent = TweetParent(key_name = "test")
 parentkey = tweetparent.key()

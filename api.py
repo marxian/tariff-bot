@@ -13,6 +13,7 @@ def tweet_to_string(tweet):
 		u"text: " + unicode(tweet.text),
 		u"words: " + unicode(tweet.words),
 		u"tags: " + unicode(tweet.tags),
+		u"countries: " + unicode(tweet.countries),
 		u"id: " + unicode(tweet.id),
 		u"\n",
 		))
