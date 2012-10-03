@@ -25,7 +25,19 @@ configobject = {
 			"search_criteria" : [["jobless","unemployment","job","work","labour"]],
 			"relevant_data" : ("Total Unemployment", 'SL.UEM.TOTL.ZS'),
 			"response_templates" : ["The total unemployment in {country} is {value}%"]
-		}
+		},
+		{
+			"twitter_search_term" : "pollution",
+			"search_criteria" : [["green","environment","CO2","emissions", "carbon", "dioxide"]],
+			"relevant_data" : ("Tonnes of CO2 produced per capita", 'EN.ATM.CO2E.PC'),
+			"response_templates" : ["Every year {country} produces {value} metric tonnes of CO2 per person."]
+		},
+		{
+			"twitter_search_term" : "literate",
+			"search_criteria" : [["literacy", "literate","read",]],
+			"relevant_data" : ("Literacy rate, adult total (% of people ages 15 and above)", 'SE.ADT.LITR.ZS'),
+			"response_templates" : ["In {country}, {value}% of people can read."]
+		},
 
 
 	],
