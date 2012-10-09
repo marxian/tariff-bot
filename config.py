@@ -36,7 +36,7 @@ configobject = {
 			"twitter_search_term" : "literate",
 			"search_criteria" : [["literacy", "literate","read",]],
 			"relevant_data" : ("Literacy rate, adult total (% of people ages 15 and above)", 'SE.ADT.LITR.ZS'),
-			"response_templates" : ["In {country}, {value}% of people can read."]
+			"response_templates" : ["In {country}, {value}% of the adult population can read."]
 		},
 
 
