@@ -68,6 +68,7 @@ class Search(webapp.RequestHandler):
 			tweeted = []
 			for result in results:
 				self.response.out.write(u"found: " + unicode(results))
+				result.respond = True #respond to everyone now.
 				tweeted.append(brains.send(brains.compose(result)))
 			
 			for tweet in tweeted:
