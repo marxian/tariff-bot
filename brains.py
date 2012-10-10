@@ -48,7 +48,7 @@ def compose(tweet):
 	template = random.choice(tweet.spec['response_templates'])
 	country = random.choice(list(tweet.countries))
 	value = getIndicatorValue(codeForCountry(country), tweet.spec['relevant_data'][1])
-	if country.lower().startswith("united"):
+	if "of" in country.lower() or "lands" in country.lower():
 		country = "the " + country
 	if value:
 		out = template.format(country=country, value=value)
